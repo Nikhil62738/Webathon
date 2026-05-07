@@ -521,7 +521,7 @@ function CandlestickWidget({ asset }: { asset: Asset }) {
     if (!chartContainerRef.current || !asset) return;
     const isLight = app.preferences.theme === "light";
     const chart = createChart(chartContainerRef.current, {
-      layout: { background: { color: "transparent" }, textColor: isLight ? "#61716e" : "#93aaa3" },
+      layout: { background: { color: "transparent" }, textColor: isLight ? "#61716e" : "#eaecef" },
       grid: { vertLines: { color: isLight ? "rgba(25, 45, 41, 0.08)" : "rgba(201, 255, 236, 0.08)" }, horzLines: { color: isLight ? "rgba(25, 45, 41, 0.08)" : "rgba(201, 255, 236, 0.08)" } },
       timeScale: { borderColor: "rgba(159, 245, 213, 0.14)" },
       handleScroll: false,
@@ -1108,17 +1108,17 @@ function AssetDetail() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid)" />
-                <XAxis dataKey="time" stroke="var(--muted)" />
-                <YAxis stroke="var(--muted)" domain={["dataMin", "dataMax"]} />
-                <Tooltip contentStyle={{ background: "var(--panel)", border: "1px solid var(--line)", borderRadius: 8 }} />
+                <XAxis dataKey="time" stroke="var(--line)" tick={{ fill: "var(--muted)" }} />
+                <YAxis stroke="var(--line)" tick={{ fill: "var(--muted)" }} domain={["dataMin", "dataMax"]} />
+                <Tooltip contentStyle={{ background: "var(--panel-strong)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} itemStyle={{ color: "var(--text)" }} labelStyle={{ color: "var(--text)" }} />
                 <Area type="monotone" dataKey="price" stroke="#4aa3ff" fill="url(#assetGradient)" strokeWidth={3} />
               </AreaChart>
             ) : (
               <BarChart data={chart}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid)" />
-                <XAxis dataKey="time" stroke="var(--muted)" />
-                <YAxis stroke="var(--muted)" />
-                <Tooltip contentStyle={{ background: "var(--panel)", border: "1px solid var(--line)", borderRadius: 8 }} />
+                <XAxis dataKey="time" stroke="var(--line)" tick={{ fill: "var(--muted)" }} />
+                <YAxis stroke="var(--line)" tick={{ fill: "var(--muted)" }} />
+                <Tooltip contentStyle={{ background: "var(--panel-strong)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} itemStyle={{ color: "var(--text)" }} labelStyle={{ color: "var(--text)" }} />
                 <Bar dataKey="price" fill="#4aa3ff" radius={[4, 4, 0, 0]} />
               </BarChart>
             )}
@@ -1250,7 +1250,7 @@ function Portfolio() {
               <Pie data={allocation} dataKey="value" nameKey="name" innerRadius={55} outerRadius={92} paddingAngle={4}>
                 {allocation.map((_, index) => <Cell key={index} fill={["#3ee88f", "#4aa3ff", "#f8c24a", "#ff6b81", "#a78bfa"][index % 5]} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: "var(--panel-strong)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} itemStyle={{ color: "var(--text)" }} />
+              <Tooltip contentStyle={{ background: "var(--panel-strong)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} itemStyle={{ color: "var(--text)" }} labelStyle={{ color: "var(--text)" }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -1392,9 +1392,9 @@ function TradeReplayTimeline() {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={replay}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--grid)" />
-            <XAxis dataKey="name" stroke="var(--muted)" />
-            <YAxis stroke="var(--muted)" />
-            <Tooltip contentStyle={{ background: "var(--panel)", border: "1px solid var(--line)", borderRadius: 8 }} />
+            <XAxis dataKey="name" stroke="var(--line)" tick={{ fill: "var(--muted)" }} />
+            <YAxis stroke="var(--line)" tick={{ fill: "var(--muted)" }} />
+            <Tooltip contentStyle={{ background: "var(--panel-strong)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} itemStyle={{ color: "var(--text)" }} labelStyle={{ color: "var(--text)" }} />
             <Area dataKey="value" stroke="#f8c24a" fill="#f8c24a33" strokeWidth={3} />
           </AreaChart>
         </ResponsiveContainer>
