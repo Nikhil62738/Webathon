@@ -16,6 +16,29 @@
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #fafafa;
