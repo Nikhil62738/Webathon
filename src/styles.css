@@ -523,14 +523,20 @@ select {
   min-height: 43px;
   border-radius: 8px;
   border: 1px solid var(--line);
-  background: rgba(137, 160, 155, 0.08);
+  background: var(--bg-soft);
   color: var(--text);
   padding: 0 12px;
   outline: none;
 }
 
+select option {
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
 select {
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 input:focus,
