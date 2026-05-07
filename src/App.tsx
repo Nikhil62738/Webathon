@@ -427,7 +427,7 @@ function useTradeX() {
   function addAlert(symbol: string, target: number, direction: PriceAlert["direction"]) {
     if (!target) return;
     setAlerts((current) => [{ id: uid(), symbol, target, direction, active: true }, ...current]);
-    notify(`Alert armed for ${symbol}.`);
+    notify(`Alert activated for ${symbol}.`);
   }
 
   function runStrategy(strategy: string, symbol: string) {
@@ -1013,7 +1013,7 @@ function AlertsContent() {
         <button className={direction === "below" ? "selected" : ""} onClick={() => setDirection("below")}>Below</button>
       </div>
       <input type="number" value={target} onChange={(event) => setTarget(Number(event.target.value))} />
-      <button className="primary-btn full" onClick={() => app.addAlert(symbol, target, direction)}>Arm Alert</button>
+      <button className="primary-btn full" onClick={() => app.addAlert(symbol, target, direction)}>Set Price Alert</button>
       <div className="mini-stack">
         {app.alerts.slice(0, 3).map((alert) => (
           <span key={alert.id} className={alert.active ? "mini-chip" : "mini-chip muted-chip"}>
