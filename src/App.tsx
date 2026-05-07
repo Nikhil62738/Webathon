@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import React, { Suspense, useEffect, useMemo, useRef, useState, Fragment } from "react";
 import type * as THREE from "three";
-import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { createChart, CandlestickSeries, LineSeries, AreaSeries } from "lightweight-charts";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
@@ -513,6 +513,7 @@ function CommandPalette() {
 
 function CandlestickWidget({ asset }: { asset: Asset }) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<any>(null);
   const app = useApp();
   const [chartType, setChartType] = useState<"Candlestick" | "Line" | "Area">("Candlestick");
 
@@ -523,7 +524,10 @@ function CandlestickWidget({ asset }: { asset: Asset }) {
       layout: { background: { color: "transparent" }, textColor: isLight ? "#61716e" : "#93aaa3" },
       grid: { vertLines: { color: isLight ? "rgba(25, 45, 41, 0.08)" : "rgba(201, 255, 236, 0.08)" }, horzLines: { color: isLight ? "rgba(25, 45, 41, 0.08)" : "rgba(201, 255, 236, 0.08)" } },
       timeScale: { borderColor: "rgba(159, 245, 213, 0.14)" },
+      handleScroll: false,
+      handleScale: false,
     });
+    chartRef.current = chart;
     
     const data: any[] = [];
     let price = asset.price * 0.9;
@@ -585,11 +589,35 @@ function CandlestickWidget({ asset }: { asset: Asset }) {
          });
       }
     }, 1000);
-    return () => { clearInterval(interval); chart.remove(); };
+    // Prevent browser page-zoom when scrolling over the chart
+    const container = chartContainerRef.current;
+    const blockZoom = (e: WheelEvent) => { e.preventDefault(); e.stopPropagation(); };
+    container.addEventListener("wheel", blockZoom, { passive: false });
+
+    return () => {
+      clearInterval(interval);
+      container.removeEventListener("wheel", blockZoom);
+      chart.remove();
+      chartRef.current = null;
+    };
   }, [asset?.symbol, app.preferences.theme, chartType]);
 
+  function enableInteraction() {
+    if (!chartRef.current) return;
+    chartRef.current.applyOptions({ handleScroll: true, handleScale: true });
+  }
+
+  function disableInteraction() {
+    if (!chartRef.current) return;
+    chartRef.current.applyOptions({ handleScroll: false, handleScale: false });
+  }
+
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div
+      style={{ position: "relative", width: "100%", height: "100%" }}
+      onMouseEnter={enableInteraction}
+      onMouseLeave={disableInteraction}
+    >
       <div style={{ position: "absolute", top: 12, right: 12, zIndex: 10 }}>
         <select
           value={chartType}
@@ -1576,9 +1604,21 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
+function AuthenticatedApp({ onLogout }: { onLogout: () => void }) {
+  const state = useTradeX();
+  return (
+    <TradeXContext.Provider value={state}>
+      <Shell onLogout={onLogout} />
+    </TradeXContext.Provider>
+  );
+}
+
 export default function App() {
   const [authed, setAuthed] = useState(() => localStorage.getItem("tradex-auth") === "true");
-  const state = useTradeX();
+
+  function handleLogin() {
+    setAuthed(true);
+  }
 
   function handleLogout() {
     localStorage.removeItem("tradex-auth");
@@ -1587,12 +1627,8 @@ export default function App() {
   }
 
   if (!authed) {
-    return <LoginScreen onLogin={() => setAuthed(true)} />;
+    return <LoginScreen onLogin={handleLogin} />;
   }
 
-  return (
-    <TradeXContext.Provider value={state}>
-      <Shell onLogout={handleLogout} />
-    </TradeXContext.Provider>
-  );
+  return <AuthenticatedApp onLogout={handleLogout} />;
 }
